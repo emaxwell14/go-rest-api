@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/emaxwell14/go-rest-api/model"
 )
@@ -24,15 +25,12 @@ func getAllHandler(w http.ResponseWriter, _ *http.Request) {
 }
 
 func getOneHandler(w http.ResponseWriter, r *http.Request) {
-	queries := r.URL.Query()
-	id := queries.Get("id")
+	id := strings.TrimPrefix(r.URL.Path, "/tasks/")
 	if id == "" {
 		w.Write([]byte("Id not found in query."))
 		w.WriteHeader(400)
 	}
 	for _, v := range tempTasks {
-		log.Print("ID:", id)
-		log.Print("ID taks:", string(v.ID) == id)
 		if idToInt, err := strconv.Atoi(id); err == nil && idToInt == v.ID {
 			js, err := json.Marshal(v)
 			if err != nil {
