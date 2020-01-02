@@ -2,8 +2,10 @@ package api
 
 import (
 	"encoding/json"
+	"io"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/emaxwell14/go-rest-api/model"
 )
@@ -11,15 +13,44 @@ import (
 var tempTask model.Task = model.Task{ID: 10}
 var tempTasks = []model.Task{tempTask}
 
+func getAllHandler(w http.ResponseWriter, _ *http.Request) {
+	js, err := json.Marshal(tempTasks)
+	if err != nil {
+		log.Print("Error parsing json")
+		w.Write([]byte("Error retreiving tasks."))
+		w.WriteHeader(400)
+	}
+	w.Write(js)
+}
+
+func getOneHandler(w http.ResponseWriter, r *http.Request) {
+	queries := r.URL.Query()
+	id := queries.Get("id")
+	if id == "" {
+		w.Write([]byte("Id not found in query."))
+		w.WriteHeader(400)
+	}
+	for _, v := range tempTasks {
+		log.Print("ID:", id)
+		log.Print("ID taks:", string(v.ID) == id)
+		if idToInt, err := strconv.Atoi(id); err == nil && idToInt == v.ID {
+			js, err := json.Marshal(v)
+			if err != nil {
+				log.Print("Error parsing json")
+				w.Write([]byte("Error retreiving tasks."))
+				w.WriteHeader(400)
+			}
+			w.Write(js)
+			return
+		}
+	}
+	io.WriteString(w, "Could not find task.")
+}
+
 /*
 Tasks All tasks endpoints
 */
 func Tasks() {
-	http.HandleFunc("/tasks", func(w http.ResponseWriter, _ *http.Request) {
-		js, err := json.Marshal(tempTasks)
-		if err != nil {
-			log.Panic("Error parsing json")
-		}
-		w.Write(js)
-	})
+	http.HandleFunc("/tasks", getAllHandler)
+	http.HandleFunc("/tasks/", getOneHandler)
 }
