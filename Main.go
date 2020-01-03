@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io"
 	"log"
 	"net/http"
 
@@ -9,10 +8,8 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/hello", func(w http.ResponseWriter, _ *http.Request) {
-		log.Print("Hello World request received.")
-		io.WriteString(w, "Hello World")
-	})
-	api.Tasks()
-	http.ListenAndServe(":8080", nil)
+	mux := http.NewServeMux()
+	api.Tasks(mux)
+	err := http.ListenAndServe(":8080", mux)
+	log.Fatal(err)
 }

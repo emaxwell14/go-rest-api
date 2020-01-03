@@ -48,7 +48,7 @@ func getOneHandler(w http.ResponseWriter, r *http.Request) {
 /*
 Tasks All tasks endpoints
 */
-func Tasks() {
-	http.HandleFunc("/tasks", getAllHandler)
-	http.HandleFunc("/tasks/", getOneHandler)
+func Tasks(mux *http.ServeMux) {
+	mux.HandleFunc("/tasks", getAllHandler)
+	mux.HandleFunc("/tasks/", getOneHandler)
 }
