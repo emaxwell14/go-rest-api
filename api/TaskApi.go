@@ -13,8 +13,8 @@ func getAllHandler(w http.ResponseWriter, _ *http.Request) {
 	tasks := service.AllTasks()
 	js, err := json.Marshal(tasks)
 	if err != nil {
-		w.Write([]byte("Error retreiving tasks."))
-		w.WriteHeader(400)
+		SetErrorResponse(w, http.StatusInternalServerError, "")
+		return
 	}
 	w.Write(js)
 }
@@ -23,26 +23,22 @@ func getOneHandler(w http.ResponseWriter, r *http.Request) {
 	idString := strings.TrimPrefix(r.URL.Path, "/tasks/") // TODO this wont handle longer paths
 	id, err := strconv.Atoi(idString)
 	if err != nil {
-		w.Write([]byte("Id not found in query"))
-		w.WriteHeader(http.StatusBadRequest)
+		SetErrorResponse(w, http.StatusBadRequest, "Could not find id in request")
 		return
 	}
 
 	task, ok := service.OneTask(id)
 	if !ok {
-		w.Write([]byte("Task not found"))
-		w.WriteHeader(http.StatusNotFound)
+		SetErrorResponse(w, http.StatusNotFound, "Task with id not found")
 		return
 	}
 
 	js, jsonErr := json.Marshal(task)
 	if jsonErr != nil {
-		w.Write([]byte("Error retrieving tasks."))
-		w.WriteHeader(http.StatusInternalServerError)
+		SetErrorResponse(w, http.StatusInternalServerError, "")
 		return
 	}
 	w.Write(js)
-	return
 }
 
 /*
