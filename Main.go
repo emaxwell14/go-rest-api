@@ -6,6 +6,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/emaxwell14/go-rest-api/model"
+	"github.com/emaxwell14/go-rest-api/service"
+
 	"github.com/emaxwell14/go-rest-api/api"
 )
 
@@ -24,6 +27,8 @@ func loggerFunc(_ http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	service.AddTask(model.Task{ID: 10})
+
 	mux := http.NewServeMux()
 	api.Tasks(mux)
 

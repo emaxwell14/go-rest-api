@@ -4,8 +4,7 @@ import (
 	"github.com/emaxwell14/go-rest-api/model"
 )
 
-var tempTask model.Task = model.Task{ID: 10}
-var tempTasks = []model.Task{tempTask}
+var tempTasks = []model.Task{}
 
 // AllTasks gets every task that has been created
 func AllTasks() []model.Task {
@@ -20,4 +19,11 @@ func OneTask(id int) (model.Task, bool) {
 		}
 	}
 	return model.Task{}, false
+}
+
+// AddTask will add a new task
+// TODO: Decide later what happens for id. Add/edit etc
+func AddTask(task model.Task) (model.Task, bool) {
+	tempTasks = append(tempTasks, task)
+	return task, true // return ok as other impl may be a db and could have an issue
 }
