@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/emaxwell14/service"
+	"github.com/emaxwell14/go-rest-api/service"
 )
 
 func getAllHandler(w http.ResponseWriter, _ *http.Request) {
