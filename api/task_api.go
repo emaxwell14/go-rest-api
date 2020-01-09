@@ -2,9 +2,9 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/emaxwell14/go-rest-api/model"
 	"github.com/emaxwell14/go-rest-api/service"
@@ -51,13 +51,16 @@ func TasksGetOne() http.HandlerFunc {
 }
 
 // TasksCreate adds a new task and returns the task in the response
-// TODO: how to validate the task fields
 func TasksCreate() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// TODO: parse the task from the request body
-		task := model.Task{
-			Name:        "Do Shopping",
-			CreatedDate: time.Now(),
+		decoder := json.NewDecoder(r.Body)
+		task := model.Task{}
+		err := decoder.Decode(&task)
+		if err != nil {
+			// TODO: how to validate the task fields
+			SetErrorResponse(w, http.StatusBadRequest, "Validation error on task")
+			fmt.Println(err)
+			return
 		}
 
 		task, ok := service.CreateTask(task)

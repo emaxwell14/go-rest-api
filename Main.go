@@ -9,6 +9,6 @@ import (
 func main() {
 	server := api.InitServer()
 
-	log.Println("REST server starting on", server.Addr)
+	log.Println("REST server starting on:", server.Addr)
 	log.Fatal(server.ListenAndServe())
 }
