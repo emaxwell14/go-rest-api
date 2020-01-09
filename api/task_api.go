@@ -9,6 +9,8 @@ import (
 	"github.com/emaxwell14/go-rest-api/service"
 )
 
+// TasksGetAll returns all of the tasks
+// TODO: could be improved with pagination etc.
 func TasksGetAll() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		tasks := service.AllTasks()
@@ -21,9 +23,11 @@ func TasksGetAll() http.HandlerFunc {
 	})
 }
 
+// TasksGetOne returns a single task based on the id in the path
+// TODO: how to handle parsing just the id from the path
 func TasksGetOne() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		idString := strings.TrimPrefix(r.URL.Path, "/tasks/") // TODO this wont handle longer paths
+		idString := strings.TrimPrefix(r.URL.Path, "/tasks/")
 		id, err := strconv.Atoi(idString)
 		if err != nil {
 			SetErrorResponse(w, http.StatusBadRequest, "Could not find id in request")
