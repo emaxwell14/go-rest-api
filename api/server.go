@@ -10,8 +10,9 @@ import (
 // InitServer creates a server and adds routes
 func InitServer() *http.Server {
 	r := mux.NewRouter()
-	r.HandleFunc("/tasks", TasksGetAll())
-	r.HandleFunc("/tasks/{id}", TasksGetOne())
+	r.HandleFunc("/tasks", TasksGetAll()).Methods("GET")
+	r.HandleFunc("/tasks/{id}", TasksGetOne()).Methods("GET")
+	r.HandleFunc("/tasks", TasksCreate()).Methods("POST")
 
 	r.Use(loggerMiddleware)
 

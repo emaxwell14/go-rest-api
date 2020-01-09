@@ -21,9 +21,9 @@ func OneTask(id int) (model.Task, bool) {
 	return model.Task{}, false
 }
 
-// AddTask will add a new task
-// TODO: Decide later what happens for id. Add/edit etc
-func AddTask(task model.Task) (model.Task, bool) {
+// CreateTask adds a new task and returns task and ok
+func CreateTask(task model.Task) (model.Task, bool) {
+	task.ID = len(tempTasks) // TODO: maybe use uuid?
 	tempTasks = append(tempTasks, task)
 	return task, true // return ok as other impl may be a db and could have an issue
 }

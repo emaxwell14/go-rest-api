@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"time"
 
+	"github.com/emaxwell14/go-rest-api/model"
 	"github.com/emaxwell14/go-rest-api/service"
 	"github.com/gorilla/mux"
 )
@@ -41,6 +43,31 @@ func TasksGetOne() http.HandlerFunc {
 
 		js, jsonErr := json.Marshal(task)
 		if jsonErr != nil {
+			SetErrorResponse(w, http.StatusInternalServerError, "")
+			return
+		}
+		w.Write(js)
+	})
+}
+
+// TasksCreate adds a new task and returns the task in the response
+// TODO: how to validate the task fields
+func TasksCreate() http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// TODO: parse the task from the request body
+		task := model.Task{
+			Name:        "Do Shopping",
+			CreatedDate: time.Now(),
+		}
+
+		task, ok := service.CreateTask(task)
+		if !ok {
+			SetErrorResponse(w, http.StatusInternalServerError, "Unable to create task")
+			return
+		}
+
+		js, err := json.Marshal(task)
+		if err != nil {
 			SetErrorResponse(w, http.StatusInternalServerError, "")
 			return
 		}
