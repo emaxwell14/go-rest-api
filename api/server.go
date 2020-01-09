@@ -11,7 +11,7 @@ import (
 func InitServer() *http.Server {
 	r := mux.NewRouter()
 	r.HandleFunc("/tasks", TasksGetAll())
-	r.HandleFunc("/tasks/", TasksGetOne())
+	r.HandleFunc("/tasks/{id}", TasksGetOne())
 
 	r.Use(loggerMiddleware)
 

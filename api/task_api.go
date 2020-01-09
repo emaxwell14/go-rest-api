@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
-	"strings"
 
 	"github.com/emaxwell14/go-rest-api/service"
+	"github.com/gorilla/mux"
 )
 
 // TasksGetAll returns all of the tasks
@@ -24,10 +24,9 @@ func TasksGetAll() http.HandlerFunc {
 }
 
 // TasksGetOne returns a single task based on the id in the path
-// TODO: how to handle parsing just the id from the path
 func TasksGetOne() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		idString := strings.TrimPrefix(r.URL.Path, "/tasks/")
+		idString := mux.Vars(r)["id"]
 		id, err := strconv.Atoi(idString)
 		if err != nil {
 			SetErrorResponse(w, http.StatusBadRequest, "Could not find id in request")
