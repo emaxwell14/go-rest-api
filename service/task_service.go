@@ -22,8 +22,20 @@ func OneTask(id int) (model.Task, bool) {
 }
 
 // CreateTask adds a new task and returns task and ok
+// TODO: throw error if the if exists
 func CreateTask(task model.Task) (model.Task, bool) {
 	task.ID = len(tempTasks) // TODO: maybe use uuid?
 	tempTasks = append(tempTasks, task)
 	return task, true // return ok as other impl may be a db and could have an issue
+}
+
+// UpdateTask changes an existing task and returns false if not found
+func UpdateTask(task model.Task) bool {
+	for i, t := range tempTasks {
+		if t.ID == task.ID {
+			tempTasks[i] = task
+			return true
+		}
+	}
+	return false
 }

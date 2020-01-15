@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -8,7 +9,7 @@ import (
 )
 
 func TestAllTasks(t *testing.T) {
-	CreateTask(model.Task{ID: 10})
+	CreateTask(model.Task{})
 	tasks := AllTasks()
 	if len(tasks) != 1 {
 		t.Errorf("Get all tasks returned incorrectly, got: %d, wanted: %d.", len(tasks), 1)
@@ -23,7 +24,7 @@ func TestOneTask_empty(t *testing.T) {
 	}
 }
 func TestOneTask_taskDoesntExist(t *testing.T) {
-	CreateTask(model.Task{ID: 10})
+	CreateTask(model.Task{})
 	task, ok := OneTask(111)
 	if ok {
 		t.Errorf("One task should return false when the task does not exist, got task with id: %d.", task.ID)
@@ -49,6 +50,27 @@ func TestCreateTask_create(t *testing.T) {
 
 	if !ok || task != createdTask {
 		t.Errorf("Create task should create task correctly.\nExpected: %+v\nActual:   %+v", task, createdTask)
+	}
+
+}
+
+func TestCreateTask_updateNonExisting(t *testing.T) {
+	tempTasks = []model.Task{}
+	ok := UpdateTask(model.Task{})
+	fmt.Printf("valueWas %t", ok)
+	if ok {
+		t.Errorf("Update task should return false when the task does not exist.")
+	}
+
+}
+func TestCreateTask_updateExisting(t *testing.T) {
+	tempTasks = []model.Task{}
+	CreateTask(model.Task{})
+	CreateTask(model.Task{}) // Creating a second as first will have ID of 0
+	ok := UpdateTask(model.Task{ID: 1})
+
+	if !ok {
+		t.Errorf("Update task should return true when the task exists.")
 	}
 
 }
