@@ -80,6 +80,8 @@ func TasksCreate() http.HandlerFunc {
 }
 
 // TasksUpdate updates an existing task
+// Returns 200 and the resource if successful
+// Returns 204 if the resource does not exist
 func TasksUpdate() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		idString := mux.Vars(r)["id"]
@@ -102,7 +104,7 @@ func TasksUpdate() http.HandlerFunc {
 		task.ID = id // ensure that the id from the url is set
 		ok := service.UpdateTask(task)
 		if !ok {
-			SetErrorResponse(w, http.StatusNoContent, "Unable to find task to update")
+			w.WriteHeader(http.StatusNoContent)
 			return
 		}
 
@@ -112,5 +114,27 @@ func TasksUpdate() http.HandlerFunc {
 			return
 		}
 		w.Write(js)
+	})
+}
+
+// TasksDelete removes a task
+// Returns 204 if successful
+// Returns 404 if resource does not exist
+func TasksDelete() http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		idString := mux.Vars(r)["id"]
+		id, err := strconv.Atoi(idString)
+		if err != nil {
+			SetErrorResponse(w, http.StatusBadRequest, "Could not find id in request")
+			return
+		}
+
+		ok := service.DeleteTask(id)
+		if !ok {
+			SetErrorResponse(w, http.StatusNotFound, "Unable to find task to delete")
+			return
+		}
+
+		w.WriteHeader(http.StatusNoContent)
 	})
 }

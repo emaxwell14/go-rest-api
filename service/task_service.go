@@ -39,3 +39,14 @@ func UpdateTask(task model.Task) bool {
 	}
 	return false
 }
+
+// DeleteTask removes a task
+func DeleteTask(id int) bool {
+	for i, t := range tempTasks {
+		if t.ID == id {
+			tempTasks = append(tempTasks[:i], tempTasks[i+1:]...)
+			return true
+		}
+	}
+	return false
+}
