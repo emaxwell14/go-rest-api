@@ -72,5 +72,31 @@ func TestCreateTask_updateExisting(t *testing.T) {
 	if !ok {
 		t.Errorf("Update task should return true when the task exists.")
 	}
+}
 
+func TestDeleteTask_doesntExist(t *testing.T) {
+	tempTasks = []model.Task{}
+
+	ok := DeleteTask(1)
+
+	if ok {
+		t.Errorf("Delete task should return false when task does not exist")
+	}
+}
+
+func TestDeleteTask_exists(t *testing.T) {
+	tempTasks = []model.Task{}
+
+	CreateTask(model.Task{})
+	CreateTask(model.Task{})
+	ok := DeleteTask(0)
+
+	if !ok {
+		t.Errorf("Delete task should return true when task exists")
+	}
+
+	tempTasks = AllTasks()
+	if len(tempTasks) > 1 {
+		t.Errorf("Delete task should remove the task")
+	}
 }
