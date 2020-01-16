@@ -13,6 +13,7 @@ func InitServer() *http.Server {
 	r.HandleFunc("/tasks", TasksGetAll()).Methods("GET")
 	r.HandleFunc("/tasks/{id}", TasksGetOne()).Methods("GET")
 	r.HandleFunc("/tasks", TasksCreate()).Methods("POST")
+	r.HandleFunc("/tasks/{id}", TasksUpdate()).Methods("PUT")
 
 	r.Use(loggerMiddleware)
 

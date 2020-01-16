@@ -77,3 +77,39 @@ func TasksCreate() http.HandlerFunc {
 		w.Write(js)
 	})
 }
+
+// TasksUpdate updates an existing task
+func TasksUpdate() http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		idString := mux.Vars(r)["id"]
+		id, err := strconv.Atoi(idString)
+		if err != nil {
+			SetErrorResponse(w, http.StatusBadRequest, "Could not find id in request")
+			return
+		}
+
+		decoder := json.NewDecoder(r.Body)
+		task := model.Task{}
+		err = decoder.Decode(&task)
+		if err != nil {
+			// TODO: how to validate the task fields
+			SetErrorResponse(w, http.StatusBadRequest, "Validation error on task")
+			fmt.Println(err)
+			return
+		}
+
+		task.ID = id // ensure that the id from the url is set
+		ok := service.UpdateTask(task)
+		if !ok {
+			SetErrorResponse(w, http.StatusBadRequest, "Unable to find task to update")
+			return
+		}
+
+		js, err := json.Marshal(task)
+		if err != nil {
+			SetErrorResponse(w, http.StatusInternalServerError, "")
+			return
+		}
+		w.Write(js)
+	})
+}
