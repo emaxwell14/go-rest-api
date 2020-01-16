@@ -74,6 +74,7 @@ func TasksCreate() http.HandlerFunc {
 			SetErrorResponse(w, http.StatusInternalServerError, "")
 			return
 		}
+		w.WriteHeader(http.StatusCreated)
 		w.Write(js)
 	})
 }
@@ -101,7 +102,7 @@ func TasksUpdate() http.HandlerFunc {
 		task.ID = id // ensure that the id from the url is set
 		ok := service.UpdateTask(task)
 		if !ok {
-			SetErrorResponse(w, http.StatusBadRequest, "Unable to find task to update")
+			SetErrorResponse(w, http.StatusNoContent, "Unable to find task to update")
 			return
 		}
 
