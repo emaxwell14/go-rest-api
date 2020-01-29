@@ -16,6 +16,7 @@ func InitServer() *http.Server {
 	r.HandleFunc("/tasks/{id}", TasksUpdate()).Methods("PUT")
 
 	r.Use(loggerMiddleware)
+	r.Use(corsMiddleware)
 
 	srv := &http.Server{
 		Handler:      r,

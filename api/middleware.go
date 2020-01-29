@@ -13,3 +13,14 @@ func loggerMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+
+		// Not required, for response to Preflight options request if there are custom headers
+		// w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		next.ServeHTTP(w, r)
+	})
+}
